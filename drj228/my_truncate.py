@@ -414,14 +414,16 @@ def test_unicode():
 def test_non_string():
     try:
         truncate(None)
-        assert False, "Expected TypeError"
     except TypeError:
         pass
+    else:
+        raise AssertionError("Expected TypeError")
 
 
 def test_bytes_rejected():
     try:
         truncate(b"a" * 101)
-        assert False, "Expected TypeError"
     except TypeError:
         pass
+    else:
+        raise AssertionError("Expected TypeError")
