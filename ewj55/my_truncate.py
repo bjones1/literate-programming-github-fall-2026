@@ -86,7 +86,9 @@ def truncate(text: str) -> str:
 
     # 1: Strip trailing whitespace from 's' (original string)
     s = text.rstrip()
-
+    # Rejects input if it becomes empty after stripping whitespace
+    if not isinstance(text, str) or len(s) == 0:
+        raise TypeError("Input must be a non-empty string.")
     # 6: Grapheme clusters are supported and treated as one character
     # We build clusters by combining base characters with their marks (diacritics)
     clusters = []
