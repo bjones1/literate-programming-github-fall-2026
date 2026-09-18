@@ -39,25 +39,45 @@
 # fingerprint: 6142bb82
 # ----
 # Specifications:
-# 1: Strip any trailing whitespace from 's' and strip trailing
+# 1: Strip any trailing whitespace from 's' (original string)
+# s = text.rstrip
 # whitespace from the truncated segment and append U+2026(...)
 # 2. If len(s) <= 100, return s + "..." (use U+2026)
 # 3. If len(s) > 100:
-# 3a. Look at the first 100 characters (s[:100])
+# 3a. Look at the first 100 characters. 
+#   We check the first character of the cluster in case a space has a combining mark
+# 
 # 3b. If s[:100] contains no spaces, return s[:100].rstrip() + "..."
 # 3c. If s[:100] ends inside a word, drop that partial word back to the last space.
-# 4. Strip any trailing whitespace from the truncated text and append "..."
-# 5. Ensure the final output is <= 101 characters
-# 6. Grapheme clusters are supported and treat each instance as one character
-# text (str): truncate the input string
-# If len(s) <=0; then raise a type error.
-# Parameter: text(str) - The input string to be truncated.
-# Returns: str with the truncated string appended to the ellipsis (U+2026).
+# 
+# 
+# 4. Strip any trailing whitespace from the truncated text
+# 
+# 
+# 5. Ensure the final output is <= 101 characters (appends 1 char ellipsis)
+# 
+# 
+# 6. Grapheme clusters are supported and treated as one character
+#  We build clusters by combining base characters with their marks (diacritics)
+#  text (str): truncate the input string
+#  If len(s) <=0; then raise a type error.
+#  Parameter: text(str) - The input string to be truncated.
+#  Returns: str with the truncated string appended to the ellipsis (U+2026).
 
 
 import unicodedata
 
 def truncate(text: str) -> str:
+    """
+    Goal: 
+        Truncate string to a specific length
+    Args:
+        s(str): The input text to shorten
+        max_len(int): total charackter limit
+    Returns:
+        str: string after truncation with ellipses whenever shortened
+    """
+
     # Handle the length <= 0 requirement and type checking
     if not isinstance(text, str):
         raise TypeError("Input must be a string.")
